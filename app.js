@@ -1,7 +1,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const source=$('source'),result=$('result');
-const state={image:null,frame:null,fileName:'instax',bounds:[.055,.945,.075,.865],drag:null};
+const state={image:null,frame:null,fileName:'Instant',bounds:[.055,.945,.075,.865],drag:null};
 const settings=['size','zoom','moveX','moveY','brightness','blur','textureStrength','textureScale'];
 const defaults={size:72,zoom:100,moveX:0,moveY:0,brightness:85,blur:10,textureStrength:20,textureScale:30};
 const DEFAULT_TEXTURE_COLOR='#5d5d5d';
@@ -15,14 +15,14 @@ const TRANSLATIONS={
  ko:{open:'사진 불러오기',sourceHeading:'원본 · 사진 영역',detect:'자동 검출',dragHint:'초록색 모서리 또는 변을 손가락으로 드래그하세요.',resultHeading:'최종 결과',layout:'레이아웃',ratio:'출력 비율',size:'중앙 사진 너비',backgroundHeading:'배경 종류',backgroundChoice:'배경 선택',photoHeading:'사진 확대 배경',zoom:'배경 확대',moveX:'좌우 이동',moveY:'상하 이동',brightness:'밝기',blur:'배경 블러',textureHeading:'재질 배경',textureKind:'재질 종류',textureStrength:'질감 강도',textureScale:'무늬 크기',textureColor:'배경 색상',newPattern:'새로운 패턴 생성',reset:'레이아웃 초기화',clearPhoto:'사진 초기화',save:'JPEG 저장',footerHint:'재질 배경 4종을 지원합니다. 브라우저와 PC 버전의 이미지 처리 방식이 달라 결과가 완전히 같지는 않을 수 있습니다.',startStatus:'사진을 불러오면 편집할 수 있어요.',ratioInstagram:'4:5 (인스타그램)',ratioSquare:'1:1 (정사각형)',ratioPortrait:'3:4 (세로)',ratioPortrait2:'2:3 (세로)',ratioStory:'9:16 (스토리)',ratioLandscape:'3:2 (가로)',ratioWide:'16:9 (가로)',photoMode:'사진 확대',textureMode:'재질 배경',concrete:'콘크리트',marble:'대리석',paper:'빈티지 종이',stone:'어두운 석재',emptyPhoto:'사진을 불러오세요',preview:'미리보기',textureLoadError:'재질 이미지 오류',textureNotReady:'재질 이미지가 아직 준비되지 않았습니다.',openError:'사진을 열지 못했습니다',loaded:name=>`불러옴: ${name} · 초록색 경계는 터치로 조절할 수 있어요.`,fileLoadError:name=>`${name} 파일을 불러오지 못했습니다`,jpegError:'JPEG 생성 실패',saveRequested:'JPEG 저장을 요청했습니다. 휴대폰에서는 다운로드 폴더를 확인하세요.',saveError:'저장 실패',textureErrorDetail:e=>'재질 이미지 오류: '+e,openErrorDetail:e=>'사진을 열지 못했습니다: '+e,saveErrorDetail:e=>'저장 실패: '+e},
  en:{open:'Open Photo',sourceHeading:'Original · Photo Area',detect:'Auto Detect',dragHint:'Drag the green corners or edges to adjust the photo area.',resultHeading:'Final Result',layout:'Layout',ratio:'Output Ratio',size:'Center Photo Width',backgroundHeading:'Background Type',backgroundChoice:'Choose Background',photoHeading:'Enlarged Photo Background',zoom:'Background Zoom',moveX:'Horizontal Position',moveY:'Vertical Position',brightness:'Brightness',blur:'Background Blur',textureHeading:'Textured Background',textureKind:'Texture Type',textureStrength:'Texture Strength',textureScale:'Pattern Size',textureColor:'Background Color',newPattern:'Generate New Pattern',reset:'Reset Layout',clearPhoto:'Clear Photo',save:'Save JPEG',footerHint:'Four textures are available. Browser and desktop image processing may produce slightly different results.',startStatus:'Open a photo to start editing.',ratioInstagram:'4:5 (Instagram)',ratioSquare:'1:1 (Square)',ratioPortrait:'3:4 (Portrait)',ratioPortrait2:'2:3 (Portrait)',ratioStory:'9:16 (Story)',ratioLandscape:'3:2 (Landscape)',ratioWide:'16:9 (Landscape)',photoMode:'Enlarged Photo',textureMode:'Textured Background',concrete:'Concrete',marble:'Marble',paper:'Vintage Paper',stone:'Dark Stone',emptyPhoto:'Open a photo',preview:'Preview',textureLoadError:'Texture loading error',textureNotReady:'Texture images are not ready yet.',openError:'Unable to open photo',loaded:name=>`Loaded: ${name} · Drag the green edges to adjust the photo area.`,fileLoadError:name=>`Could not load ${name}`,jpegError:'JPEG creation failed',saveRequested:'JPEG download requested. Check your Downloads folder on mobile.',saveError:'Save failed',textureErrorDetail:e=>'Texture loading error: '+e,openErrorDetail:e=>'Unable to open photo: '+e,saveErrorDetail:e=>'Save failed: '+e}
 };
-let currentLang=(()=>{try{return localStorage.getItem('instax-language')||((navigator.language||'').toLowerCase().startsWith('ko')?'ko':'en');}catch{return (navigator.language||'').toLowerCase().startsWith('ko')?'ko':'en';}})();
+let currentLang=(()=>{try{return localStorage.getItem('Instant-language')||((navigator.language||'').toLowerCase().startsWith('ko')?'ko':'en');}catch{return (navigator.language||'').toLowerCase().startsWith('ko')?'ko':'en';}})();
 if(!TRANSLATIONS[currentLang])currentLang='en';
 const t=(key,...args)=>{const msg=TRANSLATIONS[currentLang][key]??key;return typeof msg==='function'?msg(...args):msg;};
 function applyLanguage(lang){
  currentLang=lang;document.documentElement.lang=lang;
  document.querySelectorAll('[data-i18n]').forEach(el=>{if(el.id!=='status')el.textContent=t(el.dataset.i18n);});
  for(const code of ['ko','en'])$('lang'+code[0].toUpperCase()+code.slice(1)).setAttribute('aria-pressed',String(lang===code));
- try{localStorage.setItem('instax-language',lang);}catch{}
+ try{localStorage.setItem('Instant-language',lang);}catch{}
  // Status changes only if it still contains the initial message.
  status(t(lastNotice.key,...lastNotice.args));
  schedule();
@@ -40,7 +40,7 @@ const textureNames=['concrete','marble','paper','stone'];
 function textureKey(ow,oh){return [ow,oh,$('textureKind').value,$('textureColor').value,v('textureStrength'),v('textureScale'),textureSeed].join('|');}
 async function loadTextures(){
  const entries=await Promise.all(textureNames.map(async name=>{
-   const response=await fetch(`instax_textures/${name}.jpg`);
+   const response=await fetch(`Instant_textures/${name}.jpg`);
    if(!response.ok)throw new Error(t('fileLoadError',`${name}.jpg`));
    const blob=await response.blob();
    const bitmap=await createImageBitmap(blob);
@@ -90,7 +90,7 @@ $('clearPhoto').addEventListener('click',()=>{
   loadGeneration++;
   state.image=null;
   state.frame=null;
-  state.fileName='instax';
+  state.fileName='Instant';
   state.bounds=[.055,.945,.075,.865];
   state.drag=null;
   lastLayout=null;
@@ -321,7 +321,7 @@ source.addEventListener('pointermove',e=>{if(!state.drag||!lastLayout)return;e.p
 for(const event of ['pointerup','pointercancel','lostpointercapture'])source.addEventListener(event,()=>state.drag=null);
 $('save').addEventListener('click',()=>{
  if(!state.frame)return;
- try{const [w,h]=sizes[$('ratio').value],canvas=makeCanvas(w,h);drawComposite(canvas,w,h,1);canvas.toBlob(blob=>{if(!blob){notify('jpegError');return;}const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`${state.fileName}_instax_${$('ratio').value.replace(':','x')}.jpg`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);notify('saveRequested');},'image/jpeg',.95);}catch(e){notify('saveErrorDetail',e.message);}
+ try{const [w,h]=sizes[$('ratio').value],canvas=makeCanvas(w,h);drawComposite(canvas,w,h,1);canvas.toBlob(blob=>{if(!blob){notify('jpegError');return;}const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`${state.fileName}_Instant_${$('ratio').value.replace(':','x')}.jpg`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);notify('saveRequested');},'image/jpeg',.95);}catch(e){notify('saveErrorDetail',e.message);}
 });
 applyLanguage(currentLang);
 updateMode();
@@ -332,7 +332,7 @@ schedule();
 // Mobile sticky result must sit immediately below the variable-height header.
 const siteHeader=document.querySelector('header');
 function syncHeaderHeight(){
-  document.documentElement.style.setProperty('--instax-header-height',`${Math.ceil(siteHeader.getBoundingClientRect().height)}px`);
+  document.documentElement.style.setProperty('--Instant-header-height',`${Math.ceil(siteHeader.getBoundingClientRect().height)}px`);
 }
 syncHeaderHeight();
 if('ResizeObserver' in window)new ResizeObserver(syncHeaderHeight).observe(siteHeader);
