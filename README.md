@@ -1,6 +1,6 @@
 # InstantEditor
 
-A simple web-based editor for scanned Instant photographs, featuring customizable backgrounds and aspect ratios.
+A simple web-based editor for scanned instant photographs, featuring customizable backgrounds and aspect ratios.
 
 인스탁스 스캔 사진을 간편하게 편집하고, 다양한 배경과 비율로 꾸밀 수 있는 웹 기반 사진 편집기입니다.
 
@@ -19,7 +19,7 @@ Click the link above to use InstantEditor directly in your browser. On your smar
 
 ## Features
 
-- **Automatic Photo Detection** — Automatically detects the photo area within a scanned Instant frame.
+- **Automatic Photo Detection** — Automatically detects the photo area within a scanned instant frame.
 - **Manual Adjustment** — Fine-tune the detected area by dragging its boundaries.
 - **Custom Backgrounds** — Choose between an enlarged, blurred photo background or textured backgrounds.
 - **Texture Options** — Concrete, marble, vintage paper, and dark stone.
@@ -31,7 +31,7 @@ Click the link above to use InstantEditor directly in your browser. On your smar
 ## How to Use
 
 1. Open InstantEditor in your browser.
-2. Upload a scanned Instant photograph.
+2. Upload a scanned instant photograph.
 3. Adjust the detected photo boundaries if needed.
 4. Choose a background and customize its appearance.
 5. Select an output aspect ratio.
